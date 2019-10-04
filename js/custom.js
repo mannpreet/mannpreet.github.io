@@ -1,4 +1,5 @@
-
+var spinner = $('.loader');
+spinner.addClass('spin');
 var promise1 = new Promise((resolve,reject) => {
     $.ajax({
         url: 'https://www.json-generator.com/api/json/get/bVPJtfmTxe?indent=0',
@@ -26,6 +27,7 @@ var promise2 = new Promise((resolve,reject) => {
 
 Promise.all([promise1, promise2]).then(function(values){
     console.log("PromiseAll", values);
+    $('.loader').hide();
     var teamArray = values.reduce(function (aggregator, teamInformtaion) {
         return aggregator.concat(teamInformtaion);
     });

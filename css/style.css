@@ -1,0 +1,37 @@
+* {
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    line-height: normal; 
+}
+ul {
+    padding:0;
+}
+ul li {
+    list-style-type: none;
+}
+p {
+    margin-bottom: 2px;
+}
+.table {
+    margin-bottom: 0;
+}
+.page-wrapper {
+    background-color: #F0F1F3;
+}
+.navbar {
+    border-bottom: 1px solid #59A059;
+}
+p, .nav-link, .navbar-brand {
+    color: #59A059;
+}
+.navbar-brand {
+    padding: 0;
+}
+#filterContainer {
+    padding: 20px 0 5px;
+}
+.no-records {
+    display: none;
+}

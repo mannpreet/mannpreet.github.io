@@ -1,7 +1,7 @@
 
 var promise1 = new Promise((resolve,reject) => {
     $.ajax({
-        url: 'http://www.json-generator.com/api/json/get/bVPJtfmTxe?indent=0',
+        url: 'https://www.json-generator.com/api/json/get/bVPJtfmTxe?indent=0',
         type: 'GET',
         success: function(data) {
             resolve(data)
@@ -13,7 +13,7 @@ var promise1 = new Promise((resolve,reject) => {
 });
 var promise2 = new Promise((resolve,reject) => {
     $.ajax({
-        url: 'http://www.json-generator.com/api/json/get/cegcvaSlea?indent=0',
+        url: 'https://www.json-generator.com/api/json/get/cegcvaSlea?indent=0',
         type: 'GET',
         success: function(data) {
             resolve(data)

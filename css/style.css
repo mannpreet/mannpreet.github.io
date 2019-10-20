@@ -19,12 +19,11 @@ p {
 }
 .page-wrapper {
     background-color: #F0F1F3;
+    float: left;
+    width: 100%;
 }
 .navbar {
     border-bottom: 1px solid #59A059;
-}
-p, .nav-link, .navbar-brand {
-    color: #59A059;
 }
 .navbar-brand {
     padding: 0;
@@ -50,7 +49,24 @@ p, .nav-link, .navbar-brand {
 .spin {
   animation: spinner 1.5s linear infinite;
 }
-
+.pagination-wrapper {
+    margin-top: 20px;
+}
+.jump-to-page {
+    margin-left: 5px;
+}
+.jump-to-page input {
+    width: 80px;
+    display: inline;
+}
+.pagination li a.prev, .pagination li a.next {    
+    padding: .46rem .75rem;
+}
+.page-view {
+    text-align: right;
+    font-weight: bold;
+}
 @keyframes spinner {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+

@@ -1,5 +1,6 @@
 var spinner = $('.loader');
 spinner.addClass('spin');
+var teamArrray = [];
 var promise1 = new Promise((resolve,reject) => {
     $.ajax({
         url: 'https://www.json-generator.com/api/json/get/bVPJtfmTxe?indent=0',
@@ -28,19 +29,18 @@ var promise2 = new Promise((resolve,reject) => {
 Promise.all([promise1, promise2]).then(function(values){
     console.log("PromiseAll", values);
     $('.loader').hide();
-    var teamArray = values.reduce(function (aggregator, teamInformtaion) {
+    teamArray = values.reduce(function (aggregator, teamInformtaion) {
         return aggregator.concat(teamInformtaion);
     });
     console.log('Team Array',teamArray);
+    //Set contains unique values
     const distinctAge = [...new Set(teamArray.map(ageArray => ageArray.age))];
     $('#selectByAge').append(
-        distinctAge.map(function(ageArraydistinct){
+        distinctAge.map(function(ageArraydistinct) {
         	return `<option value="${ageArraydistinct}">${ageArraydistinct}</option>`
         })
-    )
-    $('#cricketTeamBoard tbody').append(
-        teamArray.map(teamTemplate)
-    )
+    );
+    populateCricketTeamTable(teamArray);
 });
 function skillSet(skills) {
   return skills.map(skill => `${skill.primary}, ${skill.secondary}`)  
@@ -59,21 +59,38 @@ function teamTemplate(teamMember) {
 }
 
 // search by column
-var searchContent, searchContentLength;
-$('#searchMain').keyup(function(){
+var searchContent, searchContentLength, debounceFunction;
+$('#searchMain').keyup(function() {
+  var search = $(this).val().toLowerCase();
     // Search Text
-  var search = $(this).val();
-  $('table tbody tr').hide();
-  searchContent = $('table tbody tr:not(.no-records) td:contains("'+search+'")');
-  showFields();
+  if(debounceFunction) {
+      clearTimeout(debounceFunction);
+  }
+  debounceFunction = setTimeout(function() {
+    console.time("filteration"); 
+    var searchContentArray = teamArray;
+    if(search.length) {
+      searchContentArray = teamArray.filter((teamMember) => {
+        return (teamMember.firstName + teamMember.lastName + teamMember.state + teamMember.gender + skillSet(teamMember.skills).join(' ')).toLowerCase().includes(search);
+      });
+    }
+    console.timeEnd("filteration");   
+    console.time("append");
+    populateCricketTeamTable(searchContentArray);
+    console.timeEnd("append");
+  }, 400);
 });
 
 // search by age
 $('#selectByAge').on('change',function(){
 	var selectVal = $(this).val();
-	$('table tbody tr').hide();
-  searchContent = $('table tbody tr:not(.no-records) td:nth-child(3):contains("'+selectVal+'")');
-  showFields();
+  var searchAgeArray = teamArray;
+  if(selectVal != "Select By Age") {
+    searchAgeArray = teamArray.filter((teamMember) => {
+      return teamMember.age == selectVal;
+    });
+  }
+  populateCricketTeamTable(searchAgeArray);
 });
 
 function showFields() {
@@ -87,5 +104,9 @@ function showFields() {
   }
 }
 
+function populateCricketTeamTable(modifiedTeamArray) {
+  $('#cricketTeamBoard tbody').empty();
 
-
+  $('#cricketTeamBoard tbody')[0].innerHTML = 
+      modifiedTeamArray.map(teamTemplate).join('');
+}

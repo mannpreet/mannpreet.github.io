@@ -174,6 +174,9 @@ $(function(){
     page ${paginationObj.currentPage + 1} of ${Math.ceil(currentTeam.length / paginationObj.pageSize)}
     `
   }
+  function sorting() {
+
+  }
 
   $('#firstPage').click(goToFirstPage);
   $('#lastPage').click(goToLastPage);
@@ -187,4 +190,32 @@ $(function(){
     var currentJumpPage = parseInt($(this).val());
     jumpToPage(currentJumpPage);
   });
+  // sorting
+  $('#cricketTeamBoard th').click(function(){
+    $(this).find('i').removeClass('fa-sort');
+   $(this).find('i').addClass('fa-sort-up')
+    var columnName = $(this).data('column');
+    if(columnName) {
+        var sortedTeam = currentTeam.sort(function(a, b) {
+          var nameFirst, nameSecond;
+          if(typeof a[columnName] === 'string' && typeof b[columnName] === 'string') {
+            nameFirst = a[columnName].toUpperCase();
+            nameSecond = b[columnName].toUpperCase();
+          } else {
+            nameFirst = a[columnName];
+            nameSecond = b[columnName];
+          }
+            if(nameFirst < nameSecond) {
+              return -1;
+            }
+            if(nameFirst > nameSecond) {
+              return 1;
+            }
+            return 0;
+        })
+        changeCricketersList(sortedTeam);
+    }
+  })
 })
+
+

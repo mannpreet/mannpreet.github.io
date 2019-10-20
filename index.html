@@ -61,7 +61,7 @@
                 </div>
                 <div class="pagination-wrapper">   
                     <div class="float-left">
-                        <select class="form-control">
+                        <select class="form-control" id="itemsPerPage">
                             <option>10</option>
                             <option>20</option>
                             <option>30</option>
@@ -71,20 +71,20 @@
                         <span class="jump-to-page float-right">Jump to: <input type="text" name="pagenumber" class="form-control" placeholder="Page No."></span>
                         <ul class="pagination">
                             <li class="page-item">
-                                <a class="page-link" href="#">First</a>
+                                <a class="page-link" href="javascript:void(0);" id="firstPage">First</a>
                             </li>
-                            <li class="page-item disabled">
-                                <a class="page-link prev" href="#" tabindex="-1">
+                            <li class="page-item">
+                                <a class="page-link prev" href="javascript:void(0);" tabindex="-1" id="prevPage">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>                        
                             <li class="page-item">
-                                <a class="page-link next" href="#">
+                                <a class="page-link next" href="javascript:void(0);" id="nextPage">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" href="#">Last</a>
+                                <a class="page-link" href="javascript:void(0);" id="lastPage">Last</a>
                             </li>
                         </ul>
                         <p class="page-view">Page 1 of 11</p>                                      

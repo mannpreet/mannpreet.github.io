@@ -6,6 +6,10 @@ $(function(){
     currentPage: 0,
     pageSize: 10
   };
+  var sortingObj = {
+    currentOrder: null,
+    columnName: null
+  };
   var currentTeam;
   var promise1 = new Promise((resolve,reject) => {
       $.ajax({
@@ -68,7 +72,7 @@ $(function(){
   var searchContent, searchContentLength, debounceFunction;
   $('#searchMain').keyup(function() {
     var search = $(this).val().toLowerCase();
-    // Search Text
+    // Debounce for fast typing
     if(debounceFunction) {
         clearTimeout(debounceFunction);
     }
@@ -111,9 +115,7 @@ $(function(){
   }
 
   function changeCricketersList(modifiedTeamArray) {
-    currentTeam = modifiedTeamArray;
-    resetPageStart();
-    paginateAndAppendToTable();
+    sortAndPaginate(modifiedTeamArray);
   }
 
   function resetPageStart() {
@@ -174,9 +176,6 @@ $(function(){
     page ${paginationObj.currentPage + 1} of ${Math.ceil(currentTeam.length / paginationObj.pageSize)}
     `
   }
-  function sorting() {
-
-  }
 
   $('#firstPage').click(goToFirstPage);
   $('#lastPage').click(goToLastPage);
@@ -190,32 +189,85 @@ $(function(){
     var currentJumpPage = parseInt($(this).val());
     jumpToPage(currentJumpPage);
   });
-  // sorting
-  $('#cricketTeamBoard th').click(function(){
-    $(this).find('i').removeClass('fa-sort');
-   $(this).find('i').addClass('fa-sort-up')
-    var columnName = $(this).data('column');
-    if(columnName) {
-        var sortedTeam = currentTeam.sort(function(a, b) {
-          var nameFirst, nameSecond;
-          if(typeof a[columnName] === 'string' && typeof b[columnName] === 'string') {
-            nameFirst = a[columnName].toUpperCase();
-            nameSecond = b[columnName].toUpperCase();
-          } else {
-            nameFirst = a[columnName];
-            nameSecond = b[columnName];
-          }
-            if(nameFirst < nameSecond) {
-              return -1;
-            }
-            if(nameFirst > nameSecond) {
-              return 1;
-            }
-            return 0;
-        })
-        changeCricketersList(sortedTeam);
+
+
+   // Sorting Implementation
+  $('#cricketTeamBoard th').click(function() {
+    var currentSortColumn = $(this);
+    var currentIcon = currentSortColumn.find('i');
+    if(sortingObj.columnName) {
+      var previousSortColumn = $('th[data-column="' + sortingObj.columnName + '"]');
+      var previousSortIcon = previousSortColumn.children('i');
+      // If the same column is clicked
+      if(currentSortColumn.data('column') === sortingObj.columnName) {
+        if(sortingObj.currentOrder === "ascending") {
+          sortingObj.currentOrder = "descending";
+          previousSortIcon.removeClass('fa-sort-up').addClass('fa-sort-down');
+        } else {
+          sortingObj.currentOrder = "ascending";
+          previousSortIcon.removeClass('fa-sort-down').addClass('fa-sort-up');
+        }
+      } else {
+        sortingObj.currentOrder = "ascending";
+        currentIcon.removeClass('fa-sort').addClass('fa-sort-up');
+        previousSortIcon.removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
+      }
+    } else {
+      // Keep default sort order as ascending
+      sortingObj.currentOrder = "ascending";
+      currentIcon.removeClass('fa-sort').addClass('fa-sort-up');
     }
-  })
+    sortingObj.columnName = currentSortColumn.data('column');
+    sortAndPaginate(currentTeam);
+  });
+
+  function sortCricketers(cricketersList) {
+    var sortedTeam = cricketersList;
+    if(sortingObj.columnName) {
+      sortedTeam = cricketersList.sort(function(a, b) {
+        var firstColumn, secondColumn;
+        if(typeof a[sortingObj.columnName] === 'string' && typeof b[sortingObj.columnName] === 'string') {
+          firstColumn = a[sortingObj.columnName].toUpperCase();
+          secondColumn = b[sortingObj.columnName].toUpperCase();
+        } else {
+          firstColumn = a[sortingObj.columnName];
+          secondColumn = b[sortingObj.columnName];
+        }
+        if(sortingObj.currentOrder === "ascending") {
+          return sortAsc(firstColumn, secondColumn);
+        } else {
+          return sortDesc(firstColumn, secondColumn);
+        }      
+      });
+    }
+    return sortedTeam;
+  }
+
+  function sortAsc(firstColumn, secondColumn) {
+    if(firstColumn < secondColumn) {
+      return -1;
+    }
+    if(firstColumn > secondColumn) {
+      return 1;
+    }
+    return 0;
+  }
+  function sortDesc(firstColumn, secondColumn) {
+    if(firstColumn > secondColumn) {
+      return -1;
+    }
+    if(firstColumn < secondColumn) {
+      return 1;
+    }
+    return 0;
+  }
+
+  function sortAndPaginate(modifiedTeamArray) {
+    currentTeam = sortCricketers(modifiedTeamArray);
+    resetPageStart();
+    paginateAndAppendToTable();
+  }
+
 })
 
 

@@ -56,8 +56,14 @@ $(function(){
     return skills.map(skill => `${skill.primary}, ${skill.secondary}`)  
   }
   function teamTemplate(teamMember) {
+    var classFav = "";
+      if(arrayOfFavs.indexOf(teamMember._id) != -1) {
+        classFav = "fas";
+      }
+    
     return `
-    <tr>
+    <tr data-id="${teamMember._id}">
+    <td><a href="#" class="fav-player"><i class="far fa-heart ${classFav}"></i></a></td>
     <td>${teamMember.firstName}</td>
     <td>${teamMember.lastName}</td>
     <td>${teamMember.age}</td>
@@ -268,6 +274,25 @@ $(function(){
     paginateAndAppendToTable();
   }
 
+  //fav player
+  $("#cricketTeamBoard").on("click", ".fav-player", function(){
+    //alert("bye");
+    var $this = $(this);
+    var dataID = $this.parents("tr").data("id");
+    var currentState = $this.find("i").toggleClass("fas");
+    if(currentState.hasClass("fas")) {
+      arrayOfFavs.push(dataID);
+    } else {
+      var favIdIndex = arrayOfFavs.indexOf(dataID);
+      arrayOfFavs.splice(favIdIndex,1); 
+    }    
+    console.log("Current ID: ", arrayOfFavs);
+    localStorage.setItem("arrayOfFavs", JSON.stringify(arrayOfFavs));
+  });
+  var arrayOfFavs = JSON.parse(localStorage.getItem("arrayOfFavs"));
+  if(arrayOfFavs == null) {
+    arrayOfFavs = [];
+  }
 })
 
 
